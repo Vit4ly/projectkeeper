@@ -18,11 +18,23 @@
               class-name="login__form__email"
               type="email"
               id="email"
-              v-model:value="email"
+              v-model:value.trim="v$.email.$model"
             >
               Email
             </app-input>
-            <small class="helper-text invalid">Введите корректный адресс</small>
+
+            <small
+              v-if="v$.email.$dirty && v$.email.required.$invalid"
+              :class="{ invalid: v$.email.$invalid }"
+              class="helper-text"
+              >Enter Email</small
+            >
+            <small
+              v-else-if="v$.email.$dirty && v$.email.email.$invalid"
+              :class="{ invalid: v$.email.$invalid }"
+              class="helper-text"
+              >{{ v$.email.email.$message }}</small
+            >
           </div>
 
           <div>
@@ -30,11 +42,25 @@
               class-name="login__form__pass"
               type="password"
               id="pass"
-              v-model:value="password"
+              v-model:value.trim="v$.password.$model"
             >
               Password
             </app-input>
-            <small class="helper-text invalid">Введите пароль</small>
+
+            <small
+              v-if="v$.password.$dirty && v$.password.required.$invalid"
+              :class="{ invalid: v$.password.required }"
+              class="helper-text"
+              >Enter password</small
+            >
+            <small
+              v-else-if="v$.password.$dirty && v$.password.minLength.$invalid"
+              :class="{ invalid: v$.password.required }"
+              class="helper-text"
+            >
+              {{ v$.password.minLength.$message }}, now it is
+              {{ v$.password.$model.length }} long
+            </small>
           </div>
         </div>
 
@@ -46,7 +72,7 @@
           <a href="" class="login__form__forgot-box__pass">Forgot password?</a>
         </div>
         <div class="login__form__btn-box">
-          <app-button type="submit">Log in</app-button>
+          <app-button type="submit">Log in </app-button>
         </div>
 
         <div class="login__form__sign">
@@ -68,9 +94,7 @@ import { required, email, minLength } from "@vuelidate/validators";
 export default {
   name: "Login",
   setup() {
-    return {
-      v$: useVuelidate(),
-    };
+    return { v$: useVuelidate() };
   },
   data() {
     return {
@@ -113,10 +137,27 @@ export default {
 
 <style scoped lang="scss">
 .helper-text.invalid {
+  border: #f44336;
   color: #f44336;
 }
 
+.inp {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  color: rgba(51, 70, 99, 0.46);
+
+  input {
+    margin-top: 4px;
+    width: 100%;
+    height: 36px;
+    border: 1px solid rgba(51, 70, 99, 0.2);
+    border-radius: 5px;
+  }
+}
+
 .login {
+  padding: 0 15px;
   max-width: 785px;
   width: 78.5vw;
   margin: 153px auto;

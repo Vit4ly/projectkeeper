@@ -13,9 +13,14 @@
 </template>
 
 <script>
+import useVuelidate from "@vuelidate/core";
+
 export default {
   name: "AppInput",
   emits: ["update:value"],
+  setup() {
+    return { v$: useVuelidate() };
+  },
   props: {
     type: {
       type: String,
@@ -39,6 +44,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.invalid {
+  border: #f44336;
+  //color: #f44336;
+}
 .inp {
   display: flex;
   flex-direction: column;

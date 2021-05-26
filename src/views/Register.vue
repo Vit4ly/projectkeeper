@@ -59,11 +59,13 @@
         </div>
 
         <div class="sign__form__btn-box">
-          <app-button type="submit">Sign up</app-button>
+          <app-button :disabled="v$.$invalid" type="submit">Sign up</app-button>
         </div>
       </form>
       <div class="sign__log-in">
-        <p>Have an account already? <span>Log in</span></p>
+        <p>
+          Have an account already? <router-link to="/login">Log in</router-link>
+        </p>
       </div>
     </div>
   </div>
@@ -127,7 +129,9 @@ export default {
 
 <style scoped lang="scss">
 .sign {
+  padding: 0 15px;
   max-width: 785px;
+  width: 78.5vw;
   margin: 153px auto;
   background-color: #ffffff;
   border-radius: 8px;
@@ -166,7 +170,7 @@ export default {
   &__log-in {
     margin: 41px 0 55px 0;
     color: rgba(51, 70, 99, 0.46);
-    span {
+    a {
       color: #334663;
       cursor: pointer;
     }
