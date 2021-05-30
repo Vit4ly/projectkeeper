@@ -11,48 +11,104 @@
 
       <form class="sign__form" @submit.prevent="submitHandler">
         <div class="sign__form__inner">
-          <app-input
-            class-name="sign__form__first"
-            type="text"
-            id="first"
-            v-model:value="firstName"
-          >
-            First name
-          </app-input>
-          <app-input
-            class-name="sign__form__last"
-            type="text"
-            id="`last`"
-            v-model:value="lastName"
-          >
-            Last name
-          </app-input>
-          <app-input
-            class-name="sign__form__email"
-            type="email"
-            id="email"
-            v-model:value="email"
-          >
-            Email
-          </app-input>
-          <app-input
-            class-name="sign__form__pass"
-            type="password"
-            id="password"
-            v-model:value="password"
-          >
-            Password
-          </app-input>
-          <app-input
-            class-name="sign__form__repeat"
-            type="password"
-            id="repeat"
-            v-model:value="repeat"
-          >
-            Repeat password
-          </app-input>
-        </div>
+          <div>
+            <app-input
+              class-name="sign__form__first"
+              type="text"
+              id="first"
+              v-model:value.trim="v$.firstName.$model"
+            >
+              First name
+            </app-input>
+            <small
+              v-if="v$.firstName.$dirty && v$.firstName.required.$invalid"
+              :class="{ invalid: v$.firstName.required.$invalid }"
+            >
+              Enter your first name
+            </small>
+          </div>
 
+          <div>
+            <app-input
+              class-name="sign__form__last"
+              type="text"
+              id="`last`"
+              v-model:value.trim="v$.lastName.$model"
+            >
+              Last name
+            </app-input>
+            <small
+              v-if="v$.lastName.$dirty && v$.lastName.required.$invalid"
+              :class="{ invalid: v$.lastName.required.$invalid }"
+            >
+              Enter your last name
+            </small>
+          </div>
+
+          <div class="sign__form__email">
+            <app-input
+              class-name="sign__form__email"
+              type="email"
+              id="email"
+              v-model:value.trim="v$.email.$model"
+            >
+              Email
+            </app-input>
+
+            <small
+              v-if="v$.email.$dirty && v$.email.required.$invalid"
+              :class="{ invalid: v$.email.$invalid }"
+            >
+              Enter your email
+            </small>
+            <small
+              v-else-if="v$.email.$dirty && v$.email.email.$invalid"
+              :class="{ invalid: v$.email.$invalid }"
+            >
+              {{ v$.email.email.$message }}</small
+            >
+          </div>
+
+          <div>
+            <app-input
+              class-name="sign__form__pass"
+              type="password"
+              id="password"
+              v-model:value.trim="v$.password.$model"
+            >
+              Password
+            </app-input>
+            <small
+              v-if="v$.password.$dirty && v$.password.required.$invalid"
+              :class="{ invalid: v$.password.required }"
+            >
+              Password is required.</small
+            >
+            <small
+              v-else-if="v$.password.$dirty && v$.password.minLength.$invalid"
+              :class="{ invalid: v$.password.required }"
+            >
+              {{ v$.password.minLength.$message }}, now it is
+              {{ v$.password.$model.length }} long
+            </small>
+          </div>
+          <div>
+            <app-input
+              class-name="sign__form__repeat"
+              type="password"
+              id="repeat"
+              v-model:value.trim="v$.repeat.$model"
+            >
+              Repeat password
+            </app-input>
+            <small
+              v-if="v$.repeat.$dirty && v$.repeat.sameAs.$invalid"
+              :class="{ invalid: v$.repeat.sameAs }"
+            >
+              Passwords must be identical</small
+            >
+          </div>
+        </div>
         <div class="sign__form__check">
           <input type="checkbox" />
           <p>I agree to the terms of service and privacy policy.</p>
@@ -64,7 +120,8 @@
       </form>
       <div class="sign__log-in">
         <p>
-          Have an account already? <router-link to="/login">Log in</router-link>
+          Have an account already?
+          <router-link to="/login">Log in</router-link>
         </p>
       </div>
     </div>
@@ -110,14 +167,14 @@ export default {
       console.log(formData);
     },
   },
-  validations: {
-    firstName: {
-      required,
-    },
-    lastName: { required },
-    email: { required, email },
-    password: { required, minLength: minLength(8) },
-    repeat: { required, sameAs: sameAs("password") },
+  validations() {
+    return {
+      firstName: { required },
+      lastName: { required },
+      email: { required, email },
+      password: { required, minLength: minLength(6) },
+      repeat: { sameAs: sameAs(this.password) },
+    };
   },
   components: {
     IconBase,
@@ -128,6 +185,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.invalid {
+  border: #f44336;
+  color: #f44336;
+}
+
 .sign {
   padding: 0 15px;
   max-width: 785px;
@@ -167,9 +229,11 @@ export default {
       padding: 16px 58px 16px 14px;
     }
   }
+
   &__log-in {
     margin: 41px 0 55px 0;
     color: rgba(51, 70, 99, 0.46);
+
     a {
       color: #334663;
       cursor: pointer;

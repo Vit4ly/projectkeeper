@@ -26,13 +26,11 @@
             <small
               v-if="v$.email.$dirty && v$.email.required.$invalid"
               :class="{ invalid: v$.email.$invalid }"
-              class="helper-text"
-              >Enter Email</small
+              >Enter your email</small
             >
             <small
               v-else-if="v$.email.$dirty && v$.email.email.$invalid"
               :class="{ invalid: v$.email.$invalid }"
-              class="helper-text"
               >{{ v$.email.email.$message }}</small
             >
           </div>
@@ -50,13 +48,11 @@
             <small
               v-if="v$.password.$dirty && v$.password.required.$invalid"
               :class="{ invalid: v$.password.required }"
-              class="helper-text"
               >Enter password</small
             >
             <small
               v-else-if="v$.password.$dirty && v$.password.minLength.$invalid"
               :class="{ invalid: v$.password.required }"
-              class="helper-text"
             >
               {{ v$.password.minLength.$message }}, now it is
               {{ v$.password.$model.length }} long
@@ -72,7 +68,7 @@
           <a href="" class="login__form__forgot-box__pass">Forgot password?</a>
         </div>
         <div class="login__form__btn-box">
-          <app-button type="submit">Log in </app-button>
+          <app-button :disabled="v$.$invalid" type="submit">Log in </app-button>
         </div>
 
         <div class="login__form__sign">
@@ -103,15 +99,17 @@ export default {
       agree: false,
     };
   },
-  validations: {
-    email: {
-      required,
-      email,
-    },
-    password: {
-      required,
-      minLength: minLength(6),
-    },
+  validations() {
+    return {
+      email: {
+        required,
+        email,
+      },
+      password: {
+        required,
+        minLength: minLength(6),
+      },
+    };
   },
   methods: {
     submitHandler() {
@@ -136,7 +134,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.helper-text.invalid {
+.invalid {
   border: #f44336;
   color: #f44336;
 }
